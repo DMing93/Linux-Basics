@@ -31,7 +31,7 @@ auto signed unsigned sizeof void volatile const register return typedef
     int c(int d)
     {
         int e;
-        inf f(int g);
+        int f(int g);
         ...
     }
 ```
@@ -254,34 +254,34 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
 # 五. 字符串操作
 ## 5.1 相关函数
 ```c 
-    size_t  strlen( char const *string);
-    char    *strcpy(char *dst, char const *src);
-    char    *strcat(char *dst, char const *src);
-    int     strcmp(char const *s1, char const *s2);
-    char    *strncpy(char *dst, char const *src, size_t len);
-    char    *strncat(char *dst, char const *src, size_t len);
-    int     strncmp(char *dst, char const *s2, size_t len);
-    char    *strchr(char const *str, int ch);
-    char    *strrchr(char const *str, int ch);
-    char    *strpbrk(char const *str, char const *group);
-    char    *strstr(char const *s1, char const *s2);
-    size_t  strspn(char const *str, char const *group);
-    size_t  strcspn(char const *str, char const *group);
+    size_t  strlen( char const *string);   //返回字符串长度
+    char    *strcpy(char *dst, char const *src);  //拷贝字符串
+    char    *strcat(char *dst, char const *src);  //连接两字符串
+    int     strcmp(char const *s1, char const *s2);  //比较字符串
+    char    *strncpy(char *dst, char const *src, size_t len);  //拷贝字符串(将参数src字符串拷贝前len个字符至参数dst所指的地址)
+    char    *strncat(char *dst, char const *src, size_t len);  //连接两字符串（将参数src字符串拷贝len个字符到参数dst所指的字符串尾）
+    int     strncmp(char *dst, char const *s2, size_t len);  //比较字符串（比较dst和s2字符串的前len个字符）
+    char    *strchr(char const *str, int ch);  //查找字符串中第一个出现的指定字符
+    char    *strrchr(char const *str, int ch);  //查找字符串中最后出现的指定字符
+    char    *strpbrk(char const *str, char const *group);  //查找字符串中第一个出现的指定字符
+    char    *strstr(char const *s1, char const *s2);  //在一字符串中查找指定的字符串
+    size_t  strspn(char const *str, char const *group);  //返回字符串中连续含指定字符串内容的字符数
+    size_t  strcspn(char const *str, char const *group);  //返回字符串中连续不含指定字符串内容的字符数
+    
+    int     iscntrl(int ch);  //测试字符是否为ASCII 码的控制字符
+    int     isspace(int ch);  //测试字符是否为空格字符
+    int     isdigit(int ch);  //测试字符是否为阿拉伯数字
+    int     isxdigit(int ch);  //测试字符是否为16进制数字
+    int     islower(int ch);  //测试字符是否为小写字母
+    int     isupper(int ch);  //测试字符是否为大写英文字母
+    int     isalpha(int ch);  //测试字符是否为英文字母
+    int     isalnum(int ch);  //测试字符是否为英文或数字
+    int     ispunct(int ch);  //测试字符是否为标点符号或特殊符号
+    int     isgraph(int ch);  //测试字符是否为可打印字符
+    int     isprint(int ch);  //判断字符是否为可打印字符（含空格）
 
-    int     iscntrl(int ch);
-    int     isspace(int ch);
-    int     isdigit(int ch);
-    int     isxdigit(int ch);
-    int     islower(int ch);
-    int     isupper(int ch);
-    int     isalpha(int ch);
-    int     isalnum(int ch);
-    int     ispunct(int ch);
-    int     isgraph(int ch);
-    int     isprint(int ch);
-
-    int     tolower(int ch);
-    int     toupper(int ch);
+    int     tolower(int ch);  //把字母字符转换成小写
+    int     toupper(int ch);  //把字母字符转换成大写
 
     void    *memcpy(void *dst, void const *src, size_t length);
     void    *memmove(void *dst, void const *src, size_t length);
