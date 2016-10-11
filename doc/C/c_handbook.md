@@ -290,19 +290,20 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
 # 五. 字符串操作
 ## 5.1 相关函数
 ```c 
-    size_t  strlen( char const *string);   //返回字符串长度
-    char    *strcpy(char *dst, char const *src);  //拷贝字符串
-    char    *strcat(char *dst, char const *src);  //连接两字符串
-    int     strcmp(char const *s1, char const *s2);  //比较字符串
-    char    *strncpy(char *dst, char const *src, size_t len);  //拷贝字符串(将参数src字符串拷贝前len个字符至参数dst所指的地址)
-    char    *strncat(char *dst, char const *src, size_t len);  //连接两字符串（将参数src字符串拷贝len个字符到参数dst所指的字符串尾）
-    int     strncmp(char *dst, char const *s2, size_t len);  //比较字符串（比较dst和s2字符串的前len个字符）
-    char    *strchr(char const *str, int ch);  //查找字符串中第一个出现的指定字符
-    char    *strrchr(char const *str, int ch);  //查找字符串中最后出现的指定字符
-    char    *strpbrk(char const *str, char const *group);  //查找字符串中第一个出现的指定字符
+    size_t  strlen( char const *string);   //返回字符串长度。strlen（）用来计算指定的字符串 s 的长度，不包括结束字符“\0” 。返回字符串 s 的字符数。
+    char    *strcpy(char *dst, char const *src);  //拷贝字符串。strcpy（）会将参数 src 字符串拷贝至参数 dst 所指的地址。返回参数 dst 的字符串起始地址
+    char    *strcat(char *dst, char const *src);  //连接两字符串。strcat（）会将参数 src 字符串拷贝到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回参数 dst 的字符串起始地址
+    int     strcmp(char const *s1, char const *s2);  //比较字符串。strcmp（）用来比较参数 s1 和 s2 字符串。字符串大小的比较是以 ASCII 码表上的顺序来决定，此顺序亦为字符的值。strcmp（）首先将 s1 第一个字符值减去 s2 第一个字符值，若差值为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如字符串“Ac”和“ba”比较则会返回字符“A” （65）和‘b’ （98）的差值（－33）。若参数 s1 和 s2 字符串相同则返回 0。s1 若大于 s2 则返回大于 0 的值。s1 若小于 s2 则返回小于 0 的值。
+    char    *strncpy(char *dst, char const *src, size_t len);  //拷贝字符串。strncpy（）会将参数 src 字符串拷贝前 len 个字符至参数 dst 所指的地址。返回值 返回参数 dest 的字符串起始地址。
+    char    *strncat(char *dst, char const *src, size_t len);  //连接两字符串。strncat（）会将参数 src 字符串拷贝 len 个字符到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回值 返回参数 dest 的字符串起始地址。
+    int     strncmp(char *dst, char const *s2, size_t len);  //比较字符串。
+    char    *strchr(char const *str, int ch);  //查找字符串中第一个出现的指定字符。strchr（）用来找出参数 str 字符串中第一个出现的参数 ch 地址，然后将该字符出现的地址返回。如果找到指定的字符则返回该字符所在地址，否则返回 0。
+    char    *strrchr(char const *str, int ch);  //查找字符串中最后出现的指定字符。strrchr（）用来找出参数 str 字符串中最后一个出现的参数 ch 地址，然后将该字符出现的地址返回。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
+    char    *strpbrk(char const *str, char const *group);  //查找字符串中第一个出现的指定字符。strpbrk（）用来找出参数 str 字符串中最先出现存在参数 group 字符串中的任意字符。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
     char    *strstr(char const *s1, char const *s2);  //在一字符串中查找指定的字符串
-    size_t  strspn(char const *str, char const *group);  //返回字符串中连续含指定字符串内容的字符数
-    size_t  strcspn(char const *str, char const *group);  //返回字符串中连续不含指定字符串内容的字符数
+    size_t  strspn(char const *str, char const *group);  //返回字符串中连续含指定字符串内容的字符数。strspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全是 group 所指字符串中的字符。简单的说，若 strspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都是属于字符串 group 内的字符。返回值 返回字符串 s 开头连续包含字符串 gyoup 内的字符数目。
+    size_t  strcspn(char const *str, char const *group);  //返回字符串中连续不含指定字符串内容的字符数。strcspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全不在参数 group 所指的字符串中。简单地说，若 strcspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都不含字符串group 内的字符。返回字符串 str 开头连续不含字符串 group 内的字符数目
+    
     
     int     iscntrl(int ch);  //测试字符是否为ASCII 码的控制字符
     int     isspace(int ch);  //测试字符是否为空格字符
@@ -319,8 +320,9 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     int     tolower(int ch);  //把字母字符转换成小写
     int     toupper(int ch);  //把字母字符转换成大写
 
-    void    *memcpy(void *dst, void const *src, size_t length);  //拷贝内存内容。memcpy（）用来拷贝 str 所指的内存内容前 length 个字节到 dst 所指的内存地址上。与 strcpy（）不同的是，memcpy（）会完整的复制 length个字节，不会因为遇到字符串结束‘\0‘而结束。返回指向 dst 的指针。
-    void    *memmove(void *dst, void const *src, size_t length);  //
+    void    *memcpy(void *dst, void const *src, size_t length);  //拷贝内存内容。memcpy（）用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的内存地址上。与 strcpy（）不同的是，memcpy（）会完整的复制 length个字节，不会因为遇到字符串结束‘\0‘而结束。返回指向 dst 的指针。
+    void    *memmove(void *dst, void const *src, size_t length);  //拷贝内存内容。memmove（）与 memcpy（）一样都是用来拷贝 src 所指的内存内
+容前 length 个字节到 dst 所指的地址上。不同的是，当 src 和 dst 所指的内存区域重叠时，memmove（）仍然可以正确的处理，不过执行效率上会比使用 memcpy（）略慢些。返回指向 dst 的指针。
     void    *memcmp(void const *a, void const *b, size_t length);  //
     void    *memchr(void const *a, int ch, size_t length);  //
     void    *memset(void *a, int ch, size_t length);  //
