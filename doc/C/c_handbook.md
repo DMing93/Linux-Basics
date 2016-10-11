@@ -324,7 +324,9 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     void    *memmove(void *dst, void const *src, size_t length);  //拷贝内存内容。memmove（）与 memcpy（）一样都是用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的地址上。不同的是，当 src 和 dst 所指的内存区域重叠时，memmove（）仍然可以正确的处理，不过执行效率上会比使用 memcpy（）略慢些。返回指向 dst 的指针。
     void    *memcmp(void const *a, void const *b, size_t length);  //比较内存内容。memcmp（）用来比较 a 和 b 所指的内存区间前 length 个字符。字符串大小的比较是以 ASCII 码表上的顺序来决定，次顺序亦为字符的值。memcmp（）首先将 a 第一个字符值减去 b 第一个字符的值，若差为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如，字符串“Ac”和“ba”比较则会返回字符‘A’ （65）和‘b’（98）的差值（－33）。若参数 a 和 b 所指的内存内容都完全相同则返回 0 值。a 若大于b 则返回大于 0 的值。a 若小于 b 则返回小于 0 的值
     void    *memchr(void const *a, int ch, size_t length);  //在某一内存范围中查找一特定字符。memchr（）从头开始搜寻 a 所指的内存内容前 length 个字节，直到发现第一个值为 ch 的字节，则返回指向该字节的指针。返回值 如果找到指定的字节则返回该字节的指针，否则返回 0。
-    void    *memset(void *a, int ch, size_t length);  //memset()会将参数 a 所指的内存区域前 leng 个字节以参数 ch 填入，然后返回指向 a 的指针。在编写程序时，若需要将某一数组作初始化，memset()会相当方便。返回值 返回指向 a 的指针。附加说明参数c虽声明为int， 但必须是unsigned char ，所以范围在0到255之间。
+    void    *memset(void *a, int ch, size_t length);  //将一段内存空间填入某值。memset()会将参数 a 所指的内存区域前 leng 个字节以参数 ch 填入，然后返回指向 a 的指针。在编写程序时，若需要将某一数组作初始化，memset()会相当方便。返回值 返回指向 a 的指针。附加说明参数c虽声明为int， 但必须是unsigned char ，所以范围在0到255之间。
+    
+    /*(void *）是一个指针类型；空指针。既然是指针，他们它就是一个地址，在内存中，地址就可以用int来表示,参数传递中常常用到（void *）的，尤其多线程。*/
 ```
 <hr/>
 <br/>
