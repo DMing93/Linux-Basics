@@ -319,11 +319,11 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     int     tolower(int ch);  //把字母字符转换成小写
     int     toupper(int ch);  //把字母字符转换成大写
 
-    void    *memcpy(void *dst, void const *src, size_t length);
-    void    *memmove(void *dst, void const *src, size_t length);
-    void    *memcmp(void const *a, void const *b, size_t length);
-    void    *memchr(void const *a, int ch, size_t length);
-    void    *memset(void *a, int ch, size_t length);
+    void    *memcpy(void *dst, void const *src, size_t length);  //拷贝内存内容。memcpy（）用来拷贝 str 所指的内存内容前 length 个字节到 dst 所指的内存地址上。与 strcpy（）不同的是，memcpy（）会完整的复制 length个字节，不会因为遇到字符串结束‘\0‘而结束。返回指向 dst 的指针。
+    void    *memmove(void *dst, void const *src, size_t length);  //
+    void    *memcmp(void const *a, void const *b, size_t length);  //
+    void    *memchr(void const *a, int ch, size_t length);  //
+    void    *memset(void *a, int ch, size_t length);  //
 ```
 <hr/>
 <br/>
