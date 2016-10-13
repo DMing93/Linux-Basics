@@ -688,4 +688,5 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     int *ap = array+2;
 ```
 A. ap[0]    B.ap+6    C.ap[-1]   D.*(ap+2)
-<font color="#fff">BDABC CDBD</font>
+
+> BDABC CDBD
