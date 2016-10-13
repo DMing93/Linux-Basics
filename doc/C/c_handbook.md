@@ -1,6 +1,39 @@
 # c语言简要语法手册(C brief handbook)
+
+起草人: 赵益民 王聚生
+
 ## 前言
 > 本章内容基本整理自"c和指针(pointers on c)"这一本书,内容顺序基本按照书中顺序. 本文的初衷是总结c语言中易混淆,难记忆需要反复查手册的内容,方便起见整理在一起,并**没有**包含所有的语法点,
+
+## 目录
+- 一. 标识符
+  - 1.1 extern & static 链接属性
+  - 1.2 static用于代码块内部的变量声明
+  - 1.3 typedef
+  - 1.4 const 常量定义
+  - 1.5 auto & register 存储类型
+  - 1.6 volatile
+- 二. 循环体
+  - 2.1 循环语句
+  - 2.2 循环控制
+  - 2.3 break和goto语句
+- 三. 数组
+  - 3.1 数组名和指针
+  - 3.2 下标引用
+  - 3.3 作为函数参数的数组名
+  - 3.4 二维数组
+  - 3.5 指针数组与数组指针
+- 四. 结构体
+  - 4.1 结构成员
+  - 4.2 结构体声明
+  - 4.3 结构体的自引用
+  - 4.4 不完整的声明
+  - 4.5 结构体的初始化
+- 五. 字符串操作
+  - 5.1 相关函数介绍
+- 六. 动态内存分配
+  - 6.1 使用动态内存分配
+- 选择题
 
 <br/>
 <br/>
@@ -44,6 +77,8 @@ sizeof  typedef
 static int b;
 ```
 那么变量b将为这个源文件所私有. static只对缺省链接属性为external的声明才有改变链接属性的效果.
+
+如果如一个变量进行两次不一致的声明, 那么声明的链接属性以第一次为准.
 
 
 <br/>
@@ -97,9 +132,29 @@ ANSI C允许你声明常量, 常量的样子和变量完全一致, 只是他们�
 最后, 关键字register用于自动变量的声明, 提示他们应该存储在机器的硬件寄存器中, 而不是内存中, 这类变量被称为寄存器变量. 寄存器变量比其他存储在内存中的变量访问起来效率高, 但是寄存器数量是有限的, 编译器只会选取前几个声明的变量实际存储在寄存器中, 其他的按普通自动变量. 
 
 ## 1.6 volatile
-在更微观的层面上, 同样的变量在两条相邻的语句都可能是不同的值,考虑多线程的情况,不同线程读取同一个值,CPU调度使得我们无法确定他们在什么时机发生. 而恰恰编译器在编译源代码的时候, 会对源代码进行一定的优化. 
+在更微观的层面上, 同样的变量在两条相邻的语句都可能是不同的值,考虑多线程的情况,不同线程读取同一个值,CPU调度使得我们无法确定他们在什么时机发生. 而恰恰编译器在编译源代码的时候, 会对源代码进行一定的优化, 例如常量合并, 代码合并等操作.
+```c
+    if(value){      //优化前
+        printf("true\n");
+    }else {
+        printf("false\n");
+    }
+    if(value) {
+        printf("true\n");
+    }else {
+        printf("false\n");
+    }
 
-valatile关键字告诉编译器, 防止它以一种可以修改程序含义的方式优化程序.如果不加入volatile，基本上会导致这样的结果：要么无法编写多线程程序，要么编译器失去大量优化的机会。
+    if(value){      //优化后
+        printf("true\n");
+        printf("true\n");
+    }else{
+        printf("false\n");
+        printf("false\n");
+    }
+``` 
+
+valatile关键字告诉编译器, 防止它以一种可以修改程序含义的方式优化程序. 使得系统总是从它所在的内存读取数据, 即使它前面的指令刚刚从该处读取过数据. 如果不加入volatile，基本上会导致这样的结果：要么无法编写多线程程序, 要么编译器失去大量优化的机会。
 <hr/>
 <br/>
 <br/>
@@ -109,7 +164,7 @@ valatile关键字告诉编译器, 防止它以一种可以修改程序含义的�
 c语言有三种基本循环语句,for()语句，while()语句和do...while()语句。
 ### for()循环
 ```c
-   for(e1;e2;e3)  /、e1:变量初始化区，只执行一次。e2:循环控制区，每次都要先检查e2表达式的结果是否为真，为真进入循环，否则循环结束。e3:循环变量变化区，每次执行完for_statements;转到这里，执行e3，然后转到e2
+   for(e1;e2;e3)  //e1:变量初始化区，只执行一次。e2:循环控制区，每次都要先检查e2表达式的结果是否为真，为真进入循环，否则循环结束。e3:循环变量变化区，每次执行完for_statements;转到这里，执行e3，然后转到e2
    {
         for_statements ;     
    }   //多条语句需用{} 括起来，单条语句可以不用，但建议使用：1.代码清楚，2.便于差错。其他循环也是这样
@@ -138,10 +193,12 @@ c语言有三种基本循环语句,for()语句，while()语句和do...while()语
 break语句通常用在循环语句和开关语句中。当break用于开关语句switch中时，可使程序跳出switch而执行switch以后的语句；如果没有break语句，则将成为一个死循而无法退出。当break语句用于do-while、for、while循环语句中时，可使程序终止循而执行循环后面的语句，通常break语句总是与if语句联在一起。即满足条件时便跳出循环。
 ```c
     main()
-    {   int sn=0,i;  
+    {   
+        int sn=0,i;  
         for(i=1;i<=100;i++) 
-        {  if(i==51) break; /*如果i等于51，则跳出循环*/ 
-           sn+=i; /*1+2+……+50*/ 
+        {  
+            if(i==51) break; /*如果i等于51，则跳出循环*/ 
+            sn+=i; /*1+2+……+50*/ 
         }  
         printf(%d\n,sn);    
      }
@@ -152,7 +209,8 @@ break语句通常用在循环语句和开关语句中。当break用于开关语�
 continue语句的作用是跳过循环本中剩余的语句而强行执行下一次循环。continue语句只用在for、while、do-while等循环体中, 常与if条件语句一起使用，用来加速循环。
 ```c
     main()  
-    {  int i,j;  printf(i j\n);
+    {  
+        int i,j;  
         for(i=0;i<2;i++) 
             for(j=0;j<3;j++) 
             {  
@@ -160,13 +218,14 @@ continue语句的作用是跳过循环本中剩余的语句而强行执行下一
                 printf(%d %d\n,i,j); 
             } 
             
-     }   
-     输出结果为:  i j 
-                 0 0 
-                 0 2 
-                 1 0 
-                 1 2
-      /*从程序中可以看出，continue语句只是当前的值没有执行，也就是说当前的值跳过去了，接着执行下次循环。*/
+    }   
+    /*输出结果为:  i j 
+    *            0 0 
+    *            0 2 
+    *            1 0 
+    *            1 2
+    * 从程序中可以看出，continue语句只是当前的值没有执行，也就是说当前的值跳过去了，接着执行下次循环。
+    */
 ```
 ### goto语句
 goto语句是一种无条件转移语句。
@@ -181,7 +240,7 @@ goto 标号;
             if(i==51) goto loop; /*如果i等于51，则跳出循环*/ 
             sn+=i; /*1+2+……+50*/ 
         }  
-        loop:   
+loop:   
         printf(%d\n,sn); 
     } 
     /*可以看出，这儿的goto语句和break作用很类似。 这儿的loop:  printf(%d\n,sn);  也可以写成loop: printf(%d\n,sn); */
@@ -379,7 +438,7 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     Simple  y[20], *z;
 ```
 
-## 4.3 结构体的自应用
+## 4.3 结构体的自引用
 如何在一个结构体内部包含一个类型为该结构本身的成员？
 ```c
     struct SELF_REF1{
@@ -452,19 +511,58 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
 # 五. 字符串操作
 ## 5.1 相关函数
 ```c 
-    size_t  strlen( char const *string);   //返回字符串长度。strlen（）用来计算指定的字符串 s 的长度，不包括结束字符“\0” 。返回字符串 s 的字符数。
-    char    *strcpy(char *dst, char const *src);  //拷贝字符串。strcpy（）会将参数 src 字符串拷贝至参数 dst 所指的地址。返回参数 dst 的字符串起始地址
-    char    *strcat(char *dst, char const *src);  //连接两字符串。strcat（）会将参数 src 字符串拷贝到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回参数 dst 的字符串起始地址
-    int     strcmp(char const *s1, char const *s2);  //比较字符串。strcmp（）用来比较参数 s1 和 s2 字符串。字符串大小的比较是以 ASCII 码表上的顺序来决定，此顺序亦为字符的值。strcmp（）首先将 s1 第一个字符值减去 s2 第一个字符值，若差值为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如字符串“Ac”和“ba”比较则会返回字符“A” （65）和‘b’ （98）的差值（－33）。若参数 s1 和 s2 字符串相同则返回 0。s1 若大于 s2 则返回大于 0 的值。s1 若小于 s2 则返回小于 0 的值。
-    char    *strncpy(char *dst, char const *src, size_t len);  //拷贝字符串。strncpy（）会将参数 src 字符串拷贝前 len 个字符至参数 dst 所指的地址。返回值 返回参数 dest 的字符串起始地址。
-    char    *strncat(char *dst, char const *src, size_t len);  //连接两字符串。strncat（）会将参数 src 字符串拷贝 len 个字符到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回值 返回参数 dest 的字符串起始地址。
-    int     strncmp(char *s1, char const *s2, size_t n);  //比较字符串。strncmp()用来比较参数 s1 和 s2 字符串的前 n 个字符。strncmp()首先将s1 第一个字符值减去s2 第一个字符值，若差值为0 则再继续比较下个字符，直到字符结束标志'\0'，若差值不为0，则将差值返回。例如串"Ac"和"ba"比较则会返回字符"A"(65)和'b'(98)的差值(-33)。注意：要比较的字符包括字符串结束标志'\0'，而且一旦遇到'\0'就结束比较，无论n是多少，不再继续比较后边的字符。返回值 若s1与s2的前n个字符相同，则返回0；若s1大于s2，则返回大于0的值；若s1 若小于s2，则返回小于0的值。
-    char    *strchr(char const *str, int ch);  //查找字符串中第一个出现的指定字符。strchr（）用来找出参数 str 字符串中第一个出现的参数 ch 地址，然后将该字符出现的地址返回。如果找到指定的字符则返回该字符所在地址，否则返回 0。
-    char    *strrchr(char const *str, int ch);  //查找字符串中最后出现的指定字符。strrchr（）用来找出参数 str 字符串中最后一个出现的参数 ch 地址，然后将该字符出现的地址返回。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
-    char    *strpbrk(char const *str, char const *group);  //查找字符串中第一个出现的指定字符。strpbrk（）用来找出参数 str 字符串中最先出现存在参数 group 字符串中的任意字符。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
-    char    *strstr(char const *s1, char const *s2);  //在一字符串中查找指定的字符串。strstr（）会从字符串 s1 中搜寻字符串 s2 ，并将第一次出现的地址返回。返回值 返回指定字符串第一次出现的地址，否则返回 0。
-    size_t  strspn(char const *str, char const *group);  //返回字符串中连续含指定字符串内容的字符数。strspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全是 group 所指字符串中的字符。简单的说，若 strspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都是属于字符串 group 内的字符。返回值 返回字符串 str 开头连续包含字符串 gyoup 内的字符数目。
-    size_t  strcspn(char const *str, char const *group);  //返回字符串中连续不含指定字符串内容的字符数。strcspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全不在参数 group 所指的字符串中。简单地说，若 strcspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都不含字符串group 内的字符。返回字符串 str 开头连续不含字符串 group 内的字符数目
+    
+    size_t  strlen( char const *string);  
+    //返回字符串长度。
+    //strlen（）用来计算指定的字符串 s 的长度，不包括结束字符“\0”。返回字符串 s 的字符数。 
+
+    char    *strcpy(char *dst, char const *src);  
+    //拷贝字符串。
+    //strcpy（）会将参数 src 字符串拷贝至参数 dst 所指的地址。返回参数 dst 的字符串起始地址
+
+    char    *strcat(char *dst, char const *src);  
+    //连接两字符串。
+    //strcat（）会将参数 src 字符串拷贝到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回参数 dst 的字符串起始地址
+
+    int     strcmp(char const *s1, char const *s2);  
+    //比较字符串。
+    //strcmp（）用来比较参数 s1 和 s2 字符串。字符串大小的比较是以 ASCII 码表上的顺序来决定，此顺序亦为字符的值。strcmp（）首先将 s1 第一个字符值减去 s2 第一个字符值，若差值为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如字符串“Ac”和“ba”比较则会返回字符“A” （65）和‘b’ （98）的差值（－33）。若参数 s1 和 s2 字符串相同则返回 0。s1 若大于 s2 则返回大于 0 的值。s1 若小于 s2 则返回小于 0 的值。
+
+    char    *strncpy(char *dst, char const *src, size_t len);  
+    //拷贝字符串。
+    //strncpy（）会将参数 src 字符串拷贝前 len 个字符至参数 dst 所指的地址。返回值 返回参数 dest 的字符串起始地址。
+
+    char    *strncat(char *dst, char const *src, size_t len);  
+    //连接两字符串。
+    //strncat（）会将参数 src 字符串拷贝 len 个字符到参数 dst 所指的字符串尾。第一个参数 dst 要有足够的空间来容纳要拷贝的字符串。返回值 返回参数 dest 的字符串起始地址。
+
+    int     strncmp(char *s1, char const *s2, size_t n); 
+    //比较字符串。
+    //strncmp()用来比较参数 s1 和 s2 字符串的前 n 个字符。strncmp()首先将s1 第一个字符值减去s2 第一个字符值，若差值为0 则再继续比较下个字符，直到字符结束标志'\0'，若差值不为0，则将差值返回。例如串"Ac"和"ba"比较则会返回字符"A"(65)和'b'(98)的差值(-33)。注意：要比较的字符包括字符串结束标志'\0'，而且一旦遇到'\0'就结束比较，无论n是多少，不再继续比较后边的字符。返回值 若s1与s2的前n个字符相同，则返回0；若s1大于s2，则返回大于0的值；若s1 若小于s2，则返回小于0的值。
+
+    char    *strchr(char const *str, int ch);  
+    //查找字符串中第一个出现的指定字符。
+    //strchr（）用来找出参数 str 字符串中第一个出现的参数 ch 地址，然后将该字符出现的地址返回。如果找到指定的字符则返回该字符所在地址，否则返回 0。
+
+    char    *strrchr(char const *str, int ch);  
+    //查找字符串中最后出现的指定字符。
+    //strrchr（）用来找出参数 str 字符串中最后一个出现的参数 ch 地址，然后将该字符出现的地址返回。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
+
+    char    *strpbrk(char const *str, char const *group);  
+    //查找字符串中第一个出现的指定字符。
+    //strpbrk（）用来找出参数 str 字符串中最先出现存在参数 group 字符串中的任意字符。返回值 如果找到指定的字符则返回该字符所在地址，否则返回 0。
+
+    char    *strstr(char const *s1, char const *s2); 
+    //在一字符串中查找指定的字符串。
+    //strstr（）会从字符串 s1 中搜寻字符串 s2 ，并将第一次出现的地址返回。返回值 返回指定字符串第一次出现的地址，否则返回 0。
+
+    size_t  strspn(char const *str, char const *group);  
+    //返回字符串中连续含指定字符串内容的字符数。
+    //strspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全是 group 所指字符串中的字符。简单的说，若 strspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都是属于字符串 group 内的字符。返回值 返回字符串 str 开头连续包含字符串 gyoup 内的字符数目。
+
+    size_t  strcspn(char const *str, char const *group);  
+    //返回字符串中连续不含指定字符串内容的字符数。
+    //strcspn（）从参数 str 字符串的开头计算连续的字符，而这些字符都完全不在参数 group 所指的字符串中。简单地说，若 strcspn（）返回的数值为 n，则代表字符串 str 开头连续有 n 个字符都不含字符串group 内的字符。返回字符串 str 开头连续不含字符串 group 内的字符数目
     
     
     int     iscntrl(int ch);  //测试字符是否为ASCII 码的控制字符
@@ -482,11 +580,25 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
     int     tolower(int ch);  //把字母字符转换成小写
     int     toupper(int ch);  //把字母字符转换成大写
 
-    void    *memcpy(void *dst, void const *src, size_t length);  //拷贝内存内容。memcpy（）用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的内存地址上。与 strcpy（）不同的是，memcpy（）会完整的复制 length个字节，不会因为遇到字符串结束‘\0‘而结束。返回指向 dst 的指针。
-    void    *memmove(void *dst, void const *src, size_t length);  //拷贝内存内容。memmove（）与 memcpy（）一样都是用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的地址上。不同的是，当 src 和 dst 所指的内存区域重叠时，memmove（）仍然可以正确的处理，不过执行效率上会比使用 memcpy（）略慢些。返回指向 dst 的指针。
-    void    *memcmp(void const *a, void const *b, size_t length);  //比较内存内容。memcmp（）用来比较 a 和 b 所指的内存区间前 length 个字符。字符串大小的比较是以 ASCII 码表上的顺序来决定，次顺序亦为字符的值。memcmp（）首先将 a 第一个字符值减去 b 第一个字符的值，若差为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如，字符串“Ac”和“ba”比较则会返回字符‘A’ （65）和‘b’（98）的差值（－33）。若参数 a 和 b 所指的内存内容都完全相同则返回 0 值。a 若大于b 则返回大于 0 的值。a 若小于 b 则返回小于 0 的值
-    void    *memchr(void const *a, int ch, size_t length);  //在某一内存范围中查找一特定字符。memchr（）从头开始搜寻 a 所指的内存内容前 length 个字节，直到发现第一个值为 ch 的字节，则返回指向该字节的指针。返回值 如果找到指定的字节则返回该字节的指针，否则返回 0。
-    void    *memset(void *a, int ch, size_t length);  //将一段内存空间填入某值。memset()会将参数 a 所指的内存区域前 leng 个字节以参数 ch 填入，然后返回指向 a 的指针。在编写程序时，若需要将某一数组作初始化，memset()会相当方便。返回值 返回指向 a 的指针。附加说明参数c虽声明为int， 但必须是unsigned char ，所以范围在0到255之间。
+
+    void    *memcpy(void *dst, void const *src, size_t length);  
+    //拷贝内存内容。
+    //memcpy（）用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的内存地址上。与 strcpy（）不同的是，memcpy（）会完整的复制 length个字节，不会因为遇到字符串结束‘\0‘而结束。返回指向 dst 的指针。
+    
+    void    *memmove(void *dst, void const *src, size_t length);  
+    //拷贝内存内容。
+    //memmove（）与 memcpy（）一样都是用来拷贝 src 所指的内存内容前 length 个字节到 dst 所指的地址上。不同的是，当 src 和 dst 所指的内存区域重叠时，memmove（）仍然可以正确的处理，不过执行效率上会比使用 memcpy（）略慢些。返回指向 dst 的指针。
+
+    void    *memcmp(void const *a, void const *b, size_t length);  
+    //比较内存内容。
+    //memcmp（）用来比较 a 和 b 所指的内存区间前 length 个字符。字符串大小的比较是以 ASCII 码表上的顺序来决定，次顺序亦为字符的值。memcmp（）首先将 a 第一个字符值减去 b 第一个字符的值，若差为 0 则再继续比较下个字符，若差值不为 0 则将差值返回。例如，字符串“Ac”和“ba”比较则会返回字符‘A’ （65）和‘b’（98）的差值（－33）。若参数 a 和 b 所指的内存内容都完全相同则返回 0 值。a 若大于b 则返回大于 0 的值。a 若小于 b 则返回小于 0 的值
+    void    *memchr(void const *a, int ch, size_t length);  
+    //在某一内存范围中查找一特定字符。
+    //memchr（）从头开始搜寻 a 所指的内存内容前 length 个字节，直到发现第一个值为 ch 的字节，则返回指向该字节的指针。返回值 如果找到指定的字节则返回该字节的指针，否则返回 0。
+
+    void    *memset(void *a, int ch, size_t length);  
+    //将一段内存空间填入某值。
+    //memset()会将参数 a 所指的内存区域前 leng 个字节以参数 ch 填入，然后返回指向 a 的指针。在编写程序时，若需要将某一数组作初始化，memset()会相当方便。返回值 返回指向 a 的指针。附加说明参数c虽声明为int， 但必须是unsigned char ，所以范围在0到255之间。
     
     /*(void *）是一个指针类型；空指针。既然是指针，他们它就是一个地址，在内存中，地址就可以用int来表示,参数传递中常常用到（void *）的，尤其多线程。*/
 ```
@@ -532,10 +644,48 @@ C的下标值总是从零开始, 并且不会对下标值进行有效性检查. 
 
 
 # 选择题
-1.下列**不**是可以存储变量的地方是(   )
+1. 下列**不**是可以存储变量的地方是(   )
+   - A.普通内存    B.cache    C.运行时堆栈    D.硬件寄存器
 
-A.普通内存  B.cache  C.运行时堆栈  D.硬件寄存器
+2. 下列**不**是可以存储变量相关的关键字的是(   )
+   - A.auto    B.register    C.static    D.volatile
 
-1.下列**不**是可以存储变量相关的关键字的是(   )
+阅读下面代码回答3,4,5题
+```c
+    static int i;       // 声明1
+    int func()          // 声明2
+    {
+        int j;          // 声明3
+        extern int k;   // 声明4
+        extern int i;   // 声明5
+    }
+```
 
-A.auto  B.register  C.static  D.volatile
+3. 请问变量i在声明1和声明5之后的链接属性是(   )
+   - A.internal    B.external    C.none  
+
+4. 请问函数func的缺省链接属性是(    )
+   - A.internal    B.external    C.none  
+
+5. 请问声明3中的变量j的缺省链接属性是(    )
+   - A.internal    B.external    C.none  
+
+6. 请问查找字符串中第一个出现的指定字符的函数是(  )
+   - A.strncpy     B.strncmp    C.strchr    D.strrchr
+
+7. 请问查找字符串中最后出现的指定字符的函数是(  )
+   - A.strncpy     B.strncmp    C.strchr    D.strrchr
+
+8. 请问在一字符串中查找指定的字符串。的函数是(  )
+   - A.strspn     B.strstr    C.strchr    D.strrchr
+
+9. 请问将一段内存空间填入某值的函数是(   )
+   - A.memcpy    B.memmove    C.memchr    D.memset
+
+10. 阅读下面代码,思考下列各值含义
+```c 
+    int array[];
+    int *ap = array+2;
+```
+A. ap[0]    B.ap+6    C.ap[-1]   D.*(ap+2)
+<font color="#fff">BDABC CDBD</font>
