@@ -1,1 +1,6 @@
-OperationSystem
+
+
+- 整理人：吴昊
+
+
+- 主要介绍Linux系统的安装和简单的配置
